@@ -19,5 +19,7 @@ foreach(ELEMENT IN LISTS AURIO_HDRS_AND_DIRS)
     endif()
 endforeach(ELEMENT)
 
-include_directories(${AURIO_INCLUDE_DIRS})
+
 add_executable(aurio ${AURIO_SRCS} ${AURIO_HDRS})
+target_include_directories(aurio PRIVATE ${AURIO_INCLUDE_DIRS})
+target_compile_options(aurio PRIVATE -Werror -Wall -Wpedantic -Wextra)
