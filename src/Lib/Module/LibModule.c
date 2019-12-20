@@ -1,5 +1,6 @@
 #include <assert.h>
 #include <stdlib.h>
+#include <stdio.h>
 
 #include <LibModule.h>
 #include <LibModuleCfg.h>
@@ -13,39 +14,40 @@ static const S_LibModule_EntryPoints_t *LibModule_EntryTable[LIBMODULE_N_MODULES
 S_LibModule_ModuleHndl_t* LibModule_Construct(
         const E_LibModule_ModuleId_t id,
         void *pData) {
-    S_LibModule_ModuleHndl_t *hndl = NULL;
     const S_LibModule_EntryPoints_t *pEntryPoints = LibModule_EntryTable[id];
+    S_LibModule_ModuleHndl_t *pHndl = NULL;
 
     if (NULL != pEntryPoints->Construct) {
-        hndl = malloc(sizeof(hndl));
-        assert(pEntryPoints->Construct(hndl, pData) == RET_OK);
+        pHndl = malloc(sizeof(pHndl));
+        (void) pEntryPoints->Construct(pHndl, pData);
     }
 
-    return hndl;
+    return pHndl;
 }
 
 Ret_t LibModule_Destruct(S_LibModule_ModuleHndl_t *hndl) {
-    Ret_t ret = RET_OK;
-    const S_LibModule_EntryPoints_t *pEntryPoints = NULL;
-    if (NULL != hndl)
-    {
-        pEntryPoints = hndl->EntryPoints;
-        if (NULL == pEntryPoints->Destruct)
-        {
-            ret = RET_NOK;
-        } else {
-            ret = pEntryPoints->Destruct(hndl);
-        }
+    if (NULL == hndl) {
+        return RET_NOK;
     }
 
-    return ret;
+    const S_LibModule_EntryPoints_t *pEntryPoints = hndl->EntryPoints;
+    if (NULL == pEntryPoints) {
+        return RET_NOK;
+    }
+    if (NULL == pEntryPoints->Destruct) {
+        return RET_NOK;
+    }
+
+    return pEntryPoints->Destruct(hndl);
 }
 
 Ret_t LibModule_Run(S_LibModule_ModuleHndl_t *hndl) {
     Ret_t ret = RET_OK;
     const S_LibModule_EntryPoints_t *pEntryPoints = hndl->EntryPoints;
 
-    if (NULL == pEntryPoints->Run) {
+    if (NULL == pEntryPoints) {
+        ret = RET_NOK;
+    } else if (NULL == pEntryPoints->Run) {
         ret = RET_NOK;
     } else {
         ret = pEntryPoints->Run(hndl);

@@ -22,4 +22,4 @@ endforeach(ELEMENT)
 
 add_executable(aurio ${AURIO_SRCS} ${AURIO_HDRS})
 target_include_directories(aurio PRIVATE ${AURIO_INCLUDE_DIRS})
-target_compile_options(aurio PRIVATE -Werror -Wall -Wpedantic -Wextra -Wno-unused-parameter)
+target_compile_options(aurio PRIVATE -Werror -Wall -Wpedantic -Wextra -Wno-unused-parameter -Wuninitialized)
