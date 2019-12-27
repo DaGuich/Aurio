@@ -1,5 +1,5 @@
-file(GLOB_RECURSE AURIO_SRCS_AND_DIRS LIST_DIRECTORIES true *.c)
-file(GLOB_RECURSE AURIO_HDRS_AND_DIRS LIST_DIRECTORIES true *.h)
+file(GLOB_RECURSE AURIO_SRCS_AND_DIRS LIST_DIRECTORIES true Lib/*.c)
+file(GLOB_RECURSE AURIO_HDRS_AND_DIRS LIST_DIRECTORIES true Lib/*.h)
 
 foreach(ELEMENT IN LISTS AURIO_SRCS_AND_DIRS)
     if(IS_DIRECTORY "${ELEMENT}")
@@ -19,7 +19,9 @@ foreach(ELEMENT IN LISTS AURIO_HDRS_AND_DIRS)
     endif()
 endforeach(ELEMENT)
 
+add_library(auril STATIC ${AURIO_SRCS} ${AURIO_HDRS})
+target_include_directories(auril PUBLIC ${AURIO_INCLUDE_DIRS})
+target_compile_options(auril PRIVATE -Werror -Wall -Wpedantic -Wextra -Wno-unused-parameter -Wuninitialized)
 
-add_executable(aurio ${AURIO_SRCS} ${AURIO_HDRS})
-target_include_directories(aurio PRIVATE ${AURIO_INCLUDE_DIRS})
-target_compile_options(aurio PRIVATE -Werror -Wall -Wpedantic -Wextra -Wno-unused-parameter -Wuninitialized)
+add_executable(aurio main.c)
+target_link_libraries(aurio PUBLIC auril)

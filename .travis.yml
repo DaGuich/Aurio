@@ -1,2 +1,2 @@
 language: "c"
-script: mkdir build && cd build && cmake -DCMAKE_BUILD_TYPE=Release .. && make -j
+script: mkdir build && cd build && cmake -DCMAKE_BUILD_TYPE=Release .. && make -j && ctest -R auriltest
